@@ -1,0 +1,206 @@
+<!-- Frontend Project -2
+
+Task Manager (To-Do App with Deadlines)
+
+Task Creation: Users can create new tasks with titles, descriptions, and deadlines.
+
+Priority Levels: Assign priority to tasks (e.g., high, medium, low), and color-code them accordingly.
+
+Task Categories: Group tasks by categories (e.g., work, personal).
+
+Deadline Notifications: When a task's deadline approaches, the user is notified via a visual alert (e.g., changing task color).
+
+Task Completion: Users can mark tasks as completed, and the completed tasks move to a separate list or get crossed off. -->
+
+
+
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>ToDo</title>
+    <style>
+      body {
+        font-family: Arial, sans-serif;
+        background-color: #f4f4f4;
+        margin: 0;
+        padding: 0;
+        background: url(https://images.rawpixel.com/image_800/czNmcy1wcml2YXRlL3Jhd3BpeGVsX2ltYWdlcy93ZWJzaXRlX2NvbnRlbnQvbHIvdjU0NmJhdGNoMy1teW50LTM0LWJhZGdld2F0ZXJjb2xvcl8xLmpwZw.jpg);
+      }
+
+      .app-container {
+        max-width: 300px;
+        margin: 50px auto;
+        padding: 20px;
+        background: url(https://t4.ftcdn.net/jpg/02/10/45/95/360_F_210459536_XmLDEcKq2DpeNLVmheuWeu9NM9aGKnih.jpg);
+        border-radius: 8px;
+        box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+      }
+
+      h1,
+      h2 {
+        text-align: center;
+      }
+
+      .task-input input,
+      .task-input select,
+      .task-input button {
+        width: 100%;
+        padding: 10px;
+        margin: 5px 0;
+        border: 1px solid #e5dada;
+        border-radius: 20px;
+      }
+
+      .task-input button {
+        background-color: #28a745;
+        color: white;
+        cursor: pointer;
+      }
+
+      .task-input button:hover {
+        background-color: #df067d;
+      }
+
+      .task {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        padding: 10px;
+        margin: 5px 0;
+        border-radius: 15px;
+        color: white;
+      }
+
+      .task .details {
+        flex-grow: 1;
+      }
+
+      .task .actions {
+        display: flex;
+        gap: 10px;
+      }
+
+      .task.high {
+        background-color: #e70f25;
+      }
+
+      .task.medium {
+        background-color: #ffc107;
+      }
+
+      .task.low {
+        background-color: #13bacd;
+      }
+
+      .task.completed {
+        text-decoration: line-through;
+        background-color: #7070a6;
+      }
+
+      .completed-task {
+        padding: 10px;
+        margin: 5px 0;
+        border-radius: 5px;
+        background-color: #f8f9fa;
+      }
+    </style>
+  </head>
+  <body>
+    <div class="app-container">
+      <h1>TODO APP</h1>
+      <div class="task-input">
+        <input type="text" id="task-title" placeholder="Task Title...." />
+        <input
+          type="text"
+          id="task-description"
+          placeholder="Task Description...."
+        />
+        <input type="date" id="task-deadline" />
+        <select id="task-priority">
+          <option value="high">High</option>
+          <option value="medium">Medium</option>
+          <option value="low">Low</option>
+        </select>
+        <input
+          type="text"
+          id="task-category"
+          placeholder="Category (e.g., work, personal)"
+        />
+        <button id="add-task">Add The Task To TODO App</button>
+      </div>
+
+      <h2>TODO App Tasks</h2>
+      <div id="task-list"></div>
+
+      <h2>Completed Tasks</h2>
+      <div id="completed-task-list"></div>
+    </div>
+
+    <script>
+      document.getElementById("add-task").addEventListener("click", addTask);
+
+      function addTask() {
+        const title = document.getElementById("task-title").value;
+        const description = document.getElementById("task-description").value;
+        const deadline = document.getElementById("task-deadline").value;
+        const priority = document.getElementById("task-priority").value;
+        const category = document.getElementById("task-category").value;
+
+        if (title === "" || deadline === "") {
+          alert("Please enter a task title and deadline");
+          return;
+        }
+
+        const task = {
+          title,
+          description,
+          deadline,
+          priority,
+          category,
+          completed: false,
+        };
+
+        addTaskToDOM(task);
+      }
+
+      function addTaskToDOM(task) {
+        const taskList = document.getElementById("task-list");
+        const taskEle = document.createElement("div");
+        taskEle.classList.add("task", task.priority);
+
+        const deadlineDate = new Date(task.deadline);
+        const deadlineFormatted = deadlineDate.toLocaleDateString();
+
+        taskEle.innerHTML = `
+        <div class="details">
+            <strong>${task.title}</strong> (${task.category})
+            <p>${task.description}</p>
+            <small>Deadline: ${deadlineFormatted}</small>
+        </div>
+        <div class="actions">
+            <button class="complete-task">Complete</button>
+        </div>
+    `;
+
+        const completeButton = taskEle.querySelector(".complete-task");
+        completeButton.addEventListener("click", () => {
+          completeTask(taskEle);
+        });
+
+        taskList.appendChild(taskEle);
+      }
+
+      function completeTask(taskEle) {
+        taskEle.classList.add("completed");
+        taskEle.querySelector(".complete-task").remove();
+
+        const completedTaskList = document.getElementById(
+          "completed-task-list"
+        );
+        completedTaskList.appendChild(taskEle);
+      }
+    </script>
+  </body>
+</html>
